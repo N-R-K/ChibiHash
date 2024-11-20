@@ -43,3 +43,7 @@ Here are some reasons to avoid using this:
 * When you need very strong probability against collisions: ChibiHash does very
   minimal amount of mixing compared to other hashes (e.g xxhash64). And so
   chances of collision should in theory be higher.
+
+## Unofficial ports
+
+A list of unofficial ports to other languages is [maintained here](https://github.com/N-R-K/ChibiHash/issues/4).
