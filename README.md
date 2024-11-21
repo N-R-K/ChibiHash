@@ -1,3 +1,29 @@
+# Work in progress v2 branch
+
+This is a WIP branch for version 2 of ChibiHash.
+Things may change at any point without notice.
+
+Some major improvement compared to v1:
+
+- Faster performance on short string (49 cycles/hash vs 36 cycles/hash).
+  The tail end handling has been reworked entirely with some inspiration from
+  wyhash's short input reading.
+- Better seeding. v1 seed only affected 64 bits of the initial state.
+  v2 seed affects 128 bits. This allows it to pass smhasher3's SeedBlockLen and
+  SeedBlockOffset tests.
+- Slightly better mixing in bulk handling.
+- Passes all 252 tests in smhasher3 (commit 34093a3), v1 failed 3.
+
+Avenue for improvement:
+
+- Faster bulk handling without using 128 bit multiplication.
+- Investigate better/faster compressor for the 256 bit -> 64 bit reduction.
+- Drop moremur in favor of using existing multiplier (digits of pi) for the finisher ??
+
+---
+
+Below is the original v1 readme, unaltered.
+
 # ChibiHash: Small, Fast 64 bit hash function
 
 I started writing this because all the 64 bit hash functions I came across were
