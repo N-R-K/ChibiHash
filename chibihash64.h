@@ -30,6 +30,10 @@ chibihash64(const void *keyIn, ptrdiff_t len, uint64_t seed)
 
 	uint64_t h[4] = { P1, P2, P3, seed };
 
+	// unrolling gives very slight speed boost on large inputs at the cost
+	// of larger code size. typically not worth the trade off as larger
+	// code-size hinders inlinability as well
+	// #pragma GCC unroll 2
 	for (; l >= 32; l -= 32) {
 		for (int i = 0; i < 4; ++i, k += 8) {
 			uint64_t lane = chibihash64__load64le(k);
