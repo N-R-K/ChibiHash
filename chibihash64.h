@@ -39,15 +39,19 @@ chibihash64(const void *keyIn, ptrdiff_t len, uint64_t seed)
 	uint64_t seed2 = chibihash64__rotl(seed-K, 15) + chibihash64__rotl(seed-K, 47);
 	uint64_t h[4] = { seed, seed+K, seed2, seed2+(K*K^K) };
 
-	// uncomment for a small speed boost (~3%) on large strings,
-	// at the cost of bigger code size. usually not worth the trade-off
-	// since larger code-size will hinder inlinability
-	// #pragma GCC unroll 2
+	// depending on your system unrolling might (or might not) make things
+	// a tad bit faster on large strings. on my system, it actually makes
+	// things slower.
+	// generally speaking, the cost of bigger code size is usually not
+	// worth the trade-off since larger code-size will hinder inlinability
+	// but depending on your needs, you may want to uncomment the pragma
+	// below to unroll the loop.
+	//#pragma GCC unroll 2
 	for (; l >= 32; l -= 32) {
 		for (int i = 0; i < 4; ++i, p += 8) {
 			uint64_t stripe = chibihash64__load64le(p);
-			h[i] = (stripe ^ h[i]) * K;
-			h[(i+1)&3] ^= chibihash64__rotl(stripe, 27);
+			h[i] = (stripe + h[i]) * K;
+			h[(i+1)&3] += chibihash64__rotl(stripe, 27);
 		}
 	}
 
@@ -64,7 +68,8 @@ chibihash64(const void *keyIn, ptrdiff_t len, uint64_t seed)
 		h[3] ^= p[l/2] | ((uint64_t)p[l-1] << 8);
 	}
 
-	uint64_t x = len * K; x ^= chibihash64__rotl(x, 29);
+	uint64_t x = (uint64_t)len * K;
+	x ^= chibihash64__rotl(x, 29);
 	x ^= chibihash64__reduce(h[0], h[1]);
 	x ^= chibihash64__reduce(h[2], h[3]) + seed;
 
