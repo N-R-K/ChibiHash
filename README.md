@@ -5,12 +5,12 @@ Things may change at any point without notice.
 
 Some major improvement compared to v1:
 
-- Faster performance on short string (49 cycles/hash vs 36 cycles/hash).
+- Faster performance on short string (49 cycles/hash vs 35 cycles/hash).
   The tail end handling has been reworked entirely with some inspiration from
   wyhash's short input reading.
 - Better seeding. v1 seed only affected 64 bits of the initial state.
-  v2 seed affects 128 bits. This allows it to pass smhasher3's SeedBlockLen and
-  SeedBlockOffset tests.
+  v2 seed affects the full 256 bits. This allows it to pass smhasher3's
+  SeedBlockLen and SeedBlockOffset tests.
 - Slightly better mixing in bulk handling.
 - Passes all 252 tests in smhasher3 (commit 34093a3), v1 failed 3.
 
@@ -18,7 +18,7 @@ Avenue for improvement:
 
 - Faster bulk handling without using 128 bit multiplication.
 - Investigate better/faster compressor for the 256 bit -> 64 bit reduction.
-- Drop moremur in favor of using existing multiplier (digits of pi) for the finisher ??
+- Drop moremur in favor of using existing multiplier (digits of e) for the finisher ??
 
 ---
 
