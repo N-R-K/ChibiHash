@@ -5,7 +5,7 @@ Things may change at any point without notice.
 
 Some major improvement compared to v1:
 
-- Faster performance on short string (49 cycles/hash vs 35 cycles/hash).
+- Faster performance on short string (49 cycles/hash vs 34 cycles/hash).
   The tail end handling has been reworked entirely with some inspiration from
   wyhash's short input reading.
 - Better seeding. v1 seed only affected 64 bits of the initial state.
@@ -17,8 +17,6 @@ Some major improvement compared to v1:
 Avenue for improvement:
 
 - Faster bulk handling without using 128 bit multiplication.
-- Investigate better/faster compressor for the 256 bit -> 64 bit reduction.
-- Drop moremur in favor of using existing multiplier (digits of e) for the finisher ??
 
 ---
 
