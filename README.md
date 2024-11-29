@@ -9,29 +9,31 @@ Being small and portable, the goal is to be able to use ChibiHash as a good
 
 Some key features:
 
-* Small: ~60 loc in C
+* Small: ~65 loc in C
 * Fast: See benchmark table below
 * Portable: Doesn't use hardware specific instructions (e.g SSE)
-* Good Quality: Passes [smhasher][], so should be good quality (I think)
+* Good Quality: Passes [smhasher][] and [smhasher3][], so should be good quality (I think)
 * Unencumbered: Released into the public domain
 * Free of undefined behavior and gives same result regardless of host system's endianness.
 * Non-cryptographic
 
-Here's some benchmark against other similar hash functions:
+Here's some benchmark (made via smhasher3) against other similar themed hash functions:
 
-| Name |      Large input (GiB/sec)  |  Small input (Cycles/Hash) |
-| :--- | :-------------------------: | :------------------------: |
-| chibihash64  |  **18.08**   |   49   |
-| xxhash64     |    12.59     |   50   |
-| city64       |    14.95     | **35** |
-| spooky64     |    13.83     |   59   |
+| Name               |    Large input (GiB/sec)    |  Small input (Cycles/Hash) |
+| :---               | :-------------------------: | :------------------------: |
+| chibihash64                       |  **24.20**   |   34   |
+| xxhash64                          |    15.10     |   50   |
+| city64                            |    18.30     |   47   |
+| spooky64                          |    16.68     |   70   |
+| rapidhash.protected <sup>1</sup>  |    21.50     | **32** |
+| polymur-hash <sup>1, 2</sup>      |    13.82     |   43   |
 
-It's the fastest of the bunch for large string throughput.
-For small string (< 32 bytes), cityhash beats it - worth noting that cityhash
-has [hardcoded special cases][city-small] for input below or equal 32 bytes.
+1. Requires compiler/cpu support for retrieving the full 128 bit result of a
+   64x64 bit multiply.
+2. Universal, but has a complicated seeding step.
 
 [smhasher]: https://github.com/aappleby/smhasher
-[city-small]: https://github.com/google/cityhash/blob/f5dc54147fcce12cefd16548c8e760d68ac04226/src/city.cc#L367-L375
+[smhasher3]: https://gitlab.com/fwojcik/smhasher3
 
 ## When NOT to use
 
@@ -47,3 +49,16 @@ Here are some reasons to avoid using this:
 ## Unofficial ports
 
 A list of unofficial ports to other languages is [maintained here](https://github.com/N-R-K/ChibiHash/issues/4).
+
+## Changelog
+
+### v2
+
+- Faster performance on short string (42 cycles/hash vs 34 cycles/hash).
+  The tail end handling has been reworked entirely with some inspiration from
+  wyhash's short input reading.
+- Better seeding. v1 seed only affected 64 bits of the initial state.
+  v2 seed affects the full 256 bits. This allows it to pass smhasher3's
+  SeedBlockLen and SeedBlockOffset tests.
+- Slightly better mixing in bulk handling.
+- Passes all 252 tests in smhasher3 (commit 34093a3), v1 failed 3.
