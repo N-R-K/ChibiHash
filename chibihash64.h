@@ -1,7 +1,6 @@
 // small, fast 64 bit hash function (version 2).
 //
 // https://github.com/N-R-K/ChibiHash
-// https://nrk.neocities.org/articles/chibihash
 //
 // This is free and unencumbered software released into the public domain.
 // For more information, please refer to <https://unlicense.org/>
