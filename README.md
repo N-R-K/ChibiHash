@@ -17,15 +17,20 @@ Some key features:
 * Free of undefined behavior and gives same result regardless of host system's endianness.
 * Non-cryptographic
 
-Here's some benchmark (made via smhasher3) against other similar hash functions:
+Here's some benchmark (made via smhasher3) against other similar themed hash functions:
 
-| Name |      Large input (GiB/sec)  |  Small input (Cycles/Hash) |
-| :--- | :-------------------------: | :------------------------: |
-| chibihash64  |  **24.20**   |   34   |
-| xxhash64     |    15.10     |   50   |
-| city64       |    18.30     |   47   |
-| spooky64     |    16.68     |   70   |
-| rapidhash.protected |    21.50     | **32** |
+| Name               |    Large input (GiB/sec)    |  Small input (Cycles/Hash) |
+| :---               | :-------------------------: | :------------------------: |
+| chibihash64                       |  **24.20**   |   34   |
+| xxhash64                          |    15.10     |   50   |
+| city64                            |    18.30     |   47   |
+| spooky64                          |    16.68     |   70   |
+| rapidhash.protected <sup>1</sup>  |    21.50     | **32** |
+| polymur-hash <sup>1, 2</sup>      |    13.82     |   43   |
+
+1. Requires compiler/cpu support for retrieving the full 128 bit result of a
+   64x64 bit multiply.
+2. Universal, but has a complicated seeding step.
 
 [smhasher]: https://github.com/aappleby/smhasher
 [smhasher3]: https://gitlab.com/fwojcik/smhasher3
