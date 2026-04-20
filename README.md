@@ -15,6 +15,7 @@ Some key features:
 * Good Quality: Passes [smhasher][] and [smhasher3][], so should be good quality (I think)
 * Unencumbered: Released into the public domain
 * Free of undefined behavior and gives same result regardless of host system's endianness.
+* Streaming API available at [chibihash64-stream.h](./chibihash64-stream.h).
 * Non-cryptographic
 
 Here's some benchmark (made via smhasher3) against other similar themed hash functions:
