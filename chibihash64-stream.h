@@ -39,11 +39,16 @@ static inline uint64_t chibihash64__rotl(uint64_t x, int n)
 }
 #endif
 
+#if !defined(__cplusplus) // needed to silence retraded -Wextra warning on c++
+	#define CHIBIHASH__ZERO_INIT {0}
+#else
+	#define CHIBIHASH__ZERO_INIT {}
+#endif
+
 static inline void
 chibihash64__stream_block(uint64_t h[4], const uint8_t *p)
 {
 	const uint64_t K = UINT64_C(0x2B7E151628AED2A7);
-
 	for (int i = 0; i < 4; ++i, p += 8) {
 		uint64_t stripe = chibihash64__load64le(p);
 		h[i] = (stripe + h[i]) * K;
@@ -56,17 +61,19 @@ chibihash64_init(uint64_t seed)
 {
 	const uint64_t K = UINT64_C(0x2B7E151628AED2A7); // digits of e
 	uint64_t seed2 = chibihash64__rotl(seed-K, 15) + chibihash64__rotl(seed-K, 47);
-	ChibiHash64Ctx ctx = {
-		.h = { seed, seed+K, seed2, seed2+(K*K^K) },
-		.seed = seed,
-	};
+	ChibiHash64Ctx ctx = CHIBIHASH__ZERO_INIT;
+	ctx.h[0] = seed;
+	ctx.h[1] = seed+K;
+	ctx.h[2] = seed2;
+	ctx.h[3] = seed2+(K*K^K);
+	ctx.seed = seed;
 	return ctx;
 }
 
 static inline void
-chibihash64_append(ChibiHash64Ctx *restrict ctx, void *restrict keyIn, ptrdiff_t len)
+chibihash64_append(ChibiHash64Ctx *ctx, void *keyIn, ptrdiff_t len)
 {
-	const uint8_t *restrict p = keyIn;
+	const uint8_t *p = (const uint8_t *)keyIn;
 	ptrdiff_t l = len;
 
 	ctx->total_len += len;
@@ -90,7 +97,7 @@ chibihash64_append(ChibiHash64Ctx *restrict ctx, void *restrict keyIn, ptrdiff_t
 }
 
 static inline uint64_t
-chibihash64_finish(ChibiHash64Ctx *restrict ctx)
+chibihash64_finish(ChibiHash64Ctx *ctx)
 {
 	const uint64_t K = UINT64_C(0x2B7E151628AED2A7);
 	const uint8_t *p = ctx->buf;
