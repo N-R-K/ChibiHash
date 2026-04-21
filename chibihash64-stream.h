@@ -24,12 +24,12 @@ typedef struct {
 
 // hacky way to make both chibihash64.h and chibihash64-stream.h usable within same TU
 #if !defined(CHIBIHASH64__HGUARD)
-static inline uint64_t chibihash64__load32le(const uint8_t *p)
+static inline uint64_t chibihash64__load32le(const unsigned char *p)
 {
 	return (uint64_t)p[0] <<  0 | (uint64_t)p[1] <<  8 |
 	       (uint64_t)p[2] << 16 | (uint64_t)p[3] << 24;
 }
-static inline uint64_t chibihash64__load64le(const uint8_t *p)
+static inline uint64_t chibihash64__load64le(const unsigned char *p)
 {
 	return chibihash64__load32le(p) | (chibihash64__load32le(p+4) << 32);
 }
@@ -46,7 +46,7 @@ static inline uint64_t chibihash64__rotl(uint64_t x, int n)
 #endif
 
 static inline void
-chibihash64__stream_block(uint64_t h[4], const uint8_t *p)
+chibihash64__stream_block(uint64_t h[4], const unsigned char *p)
 {
 	const uint64_t K = UINT64_C(0x2B7E151628AED2A7);
 	for (int i = 0; i < 4; ++i, p += 8) {
@@ -73,7 +73,7 @@ chibihash64_init(uint64_t seed)
 static inline void
 chibihash64_append(ChibiHash64Ctx *ctx, void *keyIn, ptrdiff_t len)
 {
-	const uint8_t *p = (const uint8_t *)keyIn;
+	const unsigned char *p = (const unsigned char *)keyIn;
 	ptrdiff_t l = len;
 
 	ctx->total_len += len;

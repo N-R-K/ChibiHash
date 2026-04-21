@@ -9,12 +9,12 @@
 #include <stdint.h>
 #include <stddef.h>
 
-static inline uint64_t chibihash64__load32le(const uint8_t *p)
+static inline uint64_t chibihash64__load32le(const unsigned char *p)
 {
 	return (uint64_t)p[0] <<  0 | (uint64_t)p[1] <<  8 |
 	       (uint64_t)p[2] << 16 | (uint64_t)p[3] << 24;
 }
-static inline uint64_t chibihash64__load64le(const uint8_t *p)
+static inline uint64_t chibihash64__load64le(const unsigned char *p)
 {
 	return chibihash64__load32le(p) | (chibihash64__load32le(p+4) << 32);
 }
@@ -26,7 +26,7 @@ static inline uint64_t chibihash64__rotl(uint64_t x, int n)
 static inline uint64_t
 chibihash64(const void *keyIn, ptrdiff_t len, uint64_t seed)
 {
-	const uint8_t *p = (const uint8_t *)keyIn;
+	const unsigned char *p = (const unsigned char *)keyIn;
 	ptrdiff_t l = len;
 
 	const uint64_t K = UINT64_C(0x2B7E151628AED2A7); // digits of e
